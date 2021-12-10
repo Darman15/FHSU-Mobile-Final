@@ -1,0 +1,14 @@
+{
+    "name": "Restaurant Reviews",
+    "short_name": "reviews",
+    "description": "Review your local restaurants",
+    "start_url": "/index.html",
+    "scope": ".",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "background_color": "white",
+    "theme_color": "purple",
+    "dir": "ltr",
+    "lang": "en-US"
+    
+}

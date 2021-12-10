@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FHSU Final Project</title>
+    <link rel="stylesheet" href="sytles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="manifest" href="/manifest.json">
+</head>
+<body>
+
+    <div class="container">
+        <div class="header center">
+            <h4>Inventory control</h4>
+
+            <br>
+
+
+            <div class="content">
+                <form id="add-inventory-form">
+                    <input type="text" name="itemName" placeholder="Item Name">
+                    <input type="text" name ="itemDescription" placeholder="Item Description">
+
+                    <button class="waves-effect waves-light purple darken-4 btn" type="submit">Add</button>
+                </form>
+            </div>
+
+                <br><br><br>
+
+               
+
+               
+            </form>
+
+            <ul id="inventory-list"></ul>
+
+            
+
+
+
+        </div>
+    </div>
+
+
+   
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script type="module">
+        // import { getHeapCodeStatistics } from "v8";
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+  import { getFirestore, collection, getDocs, addDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyBOItqvkco2PDE3H_ge8zUclP2pJrTKNqE",
+    authDomain: "fhsu-mobile-final-addf3.firebaseapp.com",
+    projectId: "fhsu-mobile-final-addf3",
+    storageBucket: "fhsu-mobile-final-addf3.appspot.com",
+    messagingSenderId: "988599507262",
+    appId: "1:988599507262:web:51a606fc2415f9e271346f"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  async function getInventory(db) {
+      const InventoryCol = collection(db, "Inventory");
+      const InventorySnapshot = await getDocs(InventoryCol);
+      const InventoryList = InventorySnapshot.docs.map((doc) => doc.data());
+      return InventoryList;
+  }
+
+
+  const inventoryList = document.querySelector('#inventory-list');
+  const form = document.querySelector('#add-inventory-form')
+
+  function renderInventory(dc) {
+      let li = document.createElement("li");
+      let itemDescription = document.createElement("span");
+      let itemName = document.createElement("span");
+      let cross = document.createElement('div');
+
+
+
+      li.setAttribute('data-id', dc.id);
+      itemDescription.textContent = dc.data().itemDescription;
+      itemName.textContent = dc.data().itemName;
+      cross.textContent = "X";
+
+      li.appendChild(itemDescription);
+      li.appendChild(itemName);
+      li.appendChild(cross);
+
+      inventoryList.appendChild(li);
+
+      cross.addEventListener('click', (e) => {
+          e.stopPropagation();
+          let id = e.target.parentElement.getAttribute('data-id');
+          deleteDoc(doc(db, "Inventory", id))
+      })
+  }
+
+
+  const inventory = getDocs(collection(db, "Inventory")).then((snapshot) => {
+      snapshot.forEach((doc) => {
+        renderInventory(doc)
+      })
+  })
+
+  form.addEventListener(('submit'), (e) => {
+    e.preventDefault();
+    const docRef = addDoc(collection(db, "Inventory"), {
+        itemDescription: form.itemDescription.value,
+        itemName: form.itemName.value
+    })
+  })
+    </script>
+    <script src="js/app.js"></script>
+    <script src="js/ui.js"></script>
+    
+   
+</body>
+</html>
